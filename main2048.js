@@ -1,4 +1,5 @@
 var board = new Array();
+var changed = new Array();
 var score = 0;
 
 $(document).ready(function(){
@@ -28,12 +29,16 @@ function init(){
     }
     for(var i=0; i<4; i++){
         board[i] = new Array();
+        changed[i] = new Array();
         for(var j=0; j<4; j++){
             board[i][j] = 0;
+            changed[i][j] = false;
         }
     }
     
     updateBoardView();
+    
+    score = 0;
         
 }
 
@@ -65,6 +70,7 @@ function updateBoardView(){
                 theNumberCell.text(board[i][j]);
                 //1theNumberCell.addClass(".number-cell");
             }
+            changed[i][j] = false;
         }
     }
 }
@@ -102,33 +108,39 @@ $(document).keydown(function(event){
         case 37:  //left
             if(moveLeft()){
                 //console.log("move over");
-                generateOneNumber();
-                isgameover();
+                setTimeout("generateOneNumber()",210);
+                setTimeout("isgameover()",200);
             }
             break;
         case 38:  //up
             if(moveUp()){
-                generateOneNumber();
-                isgameover();
+                setTimeout("generateOneNumber()",210);
+                setTimeout("isgameover()",200);
             }
             break;
         case 39:  //right
             if(moveRight()){
-                generateOneNumber();
-                isgameover();
+                setTimeout("generateOneNumber()",210);
+                setTimeout("isgameover()",200);
             }
             break;
         case 40:  //down
             if(moveDown()){
-                generateOneNumber();
-                isgameover();
+                setTimeout("generateOneNumber()",210);
+                setTimeout("isgameover()",200);
             }
             break;
     }
 });
 
 function isgameover(){
-    
+    if( nospace(board) && nomove(board) ){
+        gameover();
+    }
+}
+
+function gameover(){
+    alert("gameover!")
 }
 
 function moveLeft(){
@@ -151,13 +163,16 @@ function moveLeft(){
                         //console.log(j+"---的左边是零---"+k);
                         continue;
                     }
-                    else if(board[i][k] == board[i][j] && !noBlockHorizontal(i,k,j,board)){
+                    else if(board[i][k] == board[i][j] && !noBlockHorizontal(i,k,j,board) && !changed[i][k]){
                         //move
                         showMoveAnimation(i,j,i,k);
                         //add
                         board[i][k] += board[i][j];
                         board[i][j] = 0; 
                         //console.log(j+"---的左边值相同---"+k);
+                        score += board[i][k];
+                        updateScore(score);
+                        changed[i][k] = true;
                         continue;
                     }
                 }
@@ -186,12 +201,15 @@ function moveRight(){
                         board[i][j] = 0;                        
                         continue;
                     }
-                    else if(board[i][k] == board[i][j] && !noBlockHorizontal(i,j,k,board)){
+                    else if(board[i][k] == board[i][j] && !noBlockHorizontal(i,j,k,board) && !changed[i][k]){
                         //move
                         showMoveAnimation(i,j,i,k);
                         //add
                         board[i][k] += board[i][j];
                         board[i][j] = 0; 
+                        score += board[i][k];
+                        updateScore(score);
+                        changed[i][k] = true;
                         continue;
                     }
                 }
@@ -220,12 +238,15 @@ function moveUp(){
                         board[j][i] = 0;                        
                         continue;
                     }
-                    else if(board[k][i] == board[j][i] && !noBlockVertical(i,k,j,board)){
+                    else if(board[k][i] == board[j][i] && !noBlockVertical(i,k,j,board) && !changed[k][i]){
                         //move
                         showMoveAnimation(j,i,k,i);
                         //add
                         board[k][i] += board[j][i];
-                        board[j][i] = 0;                         
+                        board[j][i] = 0; 
+                        score += board[i][k];
+                        updateScore(score);
+                        changed[k][i] = true;
                         continue;
                     }
                 }
@@ -254,12 +275,15 @@ function moveDown(){
                         board[j][i] = 0;                        
                         continue;
                     }
-                    else if(board[k][i] == board[j][i] && !noBlockVertical(i,j,k,board)){
+                    else if(board[k][i] == board[j][i] && !noBlockVertical(i,j,k,board) && !changed[k][i]){
                         //move
                         showMoveAnimation(j,i,k,i);
                         //add
                         board[k][i] += board[j][i];
-                        board[j][i] = 0;                         
+                        board[j][i] = 0;  
+                        score += board[i][k];
+                        updateScore(score);
+                        changed[k][i] = true;
                         continue;
                     }
                 }

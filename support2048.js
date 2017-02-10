@@ -44,6 +44,13 @@ function nospace(board){
     return true;
 }
 
+function nomove(board) {
+    if(canMoveDown(board)||canMoveLeft(board)||canMoveRight(board)||canMoveUp(board)){
+       return false;
+    }
+    return true;
+}
+
 function canMoveLeft(board){
     //console.log(board);
     for(var i=0; i<4; i++){
